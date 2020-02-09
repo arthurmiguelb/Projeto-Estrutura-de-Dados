@@ -119,8 +119,6 @@ int main()
 	FILE *pont2 = fopen("lista.csv", "a+");
 	int x,i;
 	srand((unsigned) time(NULL));
-	printf("\n\nDigite um numero: ");
-	scanf("%d", &x);
 	for(i = 0; i < 50000; i++){
 		x = 0 + ( rand() % 10000 );
 		no = construct(no, x);
