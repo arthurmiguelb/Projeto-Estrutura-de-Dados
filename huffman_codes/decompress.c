@@ -15,6 +15,7 @@ void descompactar(node_arvore *head_arv, node_lista *head_list, node_lista *fim_
     descompactado[j] = '\0';
 
     FILE *descomp=fopen(descompactado, "wb");
+
     node_arvore *aux=head_arv;
     while(head_list!=NULL){
         i=7;
@@ -31,6 +32,7 @@ void descompactar(node_arvore *head_arv, node_lista *head_list, node_lista *fim_
                 folha=0;
                 aux=head_arv;
             }
+            
             bit=(conteudo(head_list->byte_comp)) >> i;
 
             if(bit%2 != 0){ 
@@ -60,7 +62,7 @@ node_arvore *cria_arv_pre(unsigned char arv[], int tam_arvore, node_arvore *head
     if(head_descomp==NULL){
         head_descomp = novo_no;
     }
-    if(arv[pre]=='*'){ //obs
+    if(arv[pre]=='*'){ 
         novo_no->byte = pont_para_void('*');
         novo_no->left = NULL;
         novo_no->right = NULL;
@@ -97,7 +99,7 @@ void lendo_cabecalho(FILE *pont, char arquivo[]){
     for(j=0; j<tam_arvore; j++){
         fscanf(pont,"%c", &arv[j]);
     }
-
+    
     node_arvore *head_descomp=NULL;
     head_descomp = cria_arv_pre(arv, tam_arvore, head_descomp);  
 

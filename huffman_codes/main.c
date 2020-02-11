@@ -26,8 +26,8 @@ void main(){
     if(opcao==1){
         queue *fila=(queue*)malloc(sizeof(queue));
         ler_arquivo_original(pont, fila);
-        criar_primeira_arvore(fila);
         fclose(pont);
+        criar_primeira_arvore(fila);
         converte_original_para_compactado(fila->head, arquivo);
         printf("Arquivo compactado!\n");
     }

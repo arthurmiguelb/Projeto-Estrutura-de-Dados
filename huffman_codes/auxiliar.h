@@ -9,17 +9,17 @@
 
 typedef struct queue queue;
 typedef struct node_arvore node_arvore;
-typedef struct fake_hash fake_hash;
+typedef struct array_comp array_comp;
 typedef struct node_lista node_lista;
 
 
-struct node_arvore // estrutura onde alocamos o nó para a criação da fila e logo em seguida para a árvore
+struct node_arvore 
 {
 	void *byte;
-	long long int freq; // a frequencia em lld, pois em casos de foto e videos a frequencias do caracteres será bem grande
+	long long int freq; 
 	node_arvore *next;
-	node_arvore *left; // ponteiro para esquerda para a criação da arvore
-	node_arvore *right; // ponteiro para a direita para a criação da arvore
+	node_arvore *left; 
+	node_arvore *right; 
 
 };
 
@@ -31,7 +31,7 @@ struct node_lista
     node_lista *previous;
 }; 
 
-struct fake_hash
+struct array_comp
 {
     unsigned short compactado[256];
     unsigned short profundidade[256];

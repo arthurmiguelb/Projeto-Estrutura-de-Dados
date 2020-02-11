@@ -10,7 +10,6 @@ node_lista *cria_lista_invertida(node_lista *head, node_lista *fim, void *byte){
     node_lista *novo_byte=(node_lista*)malloc(sizeof(node_lista));
 
     if(head==NULL){
-        head=novo_byte;
         novo_byte->previous=NULL;
     } else {
         fim->next=novo_byte;

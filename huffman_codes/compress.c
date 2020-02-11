@@ -9,7 +9,7 @@ void ler_arquivo_original(FILE *pont, queue *fila){
     for(i=0;i<256;i++){
         frequencia[i]=0; 
     }
-    i=0;
+
     while(fscanf(pont,"%c", &byte)!=EOF){ 
         frequencia[byte]++; 
     }
@@ -33,13 +33,17 @@ void criar_primeira_arvore(queue *fila){
     if(aux2==NULL){ 
         return;
     }
+    node_arvore *dequeued=aux;
+    node_arvore *dequeued2=aux2;
     fila->head=aux2->next; 
     enqueue(fila,pont_para_void('*'), (aux->freq)+(aux2->freq), aux, aux2);
+    dequeued->next=NULL;
+    dequeued2->next=NULL;
     criar_primeira_arvore(fila);
 }
 int contando(node_arvore *head, int tamanho_da_arvore){ 
     if(head!=NULL){
-        if((conteudo(head->byte)) =='*'&& (eh_folha(head)) || (conteudo(head->byte) ==92)){
+        if((conteudo(head->byte)==92) || (conteudo(head->byte)) =='*'&& (eh_folha(head))  ){
             tamanho_da_arvore++;
         }
         tamanho_da_arvore++;
@@ -48,18 +52,17 @@ int contando(node_arvore *head, int tamanho_da_arvore){
     }
     return tamanho_da_arvore;
 }
-void dicionario(node_arvore *head, fake_hash *new_fake_hash, unsigned short byte, int profundidade) {
+void dicionario(node_arvore *head, array_comp *new_array_comp, unsigned short byte, int profundidade) {
     if(head!=NULL) {
         if(eh_folha(head)) {
-            new_fake_hash->compactado[(conteudo(head->byte))] = byte;
-            new_fake_hash->profundidade[(conteudo(head->byte))]=profundidade;
-
+            new_array_comp->compactado[(conteudo(head->byte))] = byte;
+            new_array_comp->profundidade[(conteudo(head->byte))]=profundidade;
         }
         profundidade++;
         byte = byte << 1;
-        dicionario(head->left, new_fake_hash, byte, profundidade);
+        dicionario(head->left, new_array_comp, byte, profundidade);
         byte++;
-        dicionario(head->right, new_fake_hash, byte, profundidade);
+        dicionario(head->right, new_array_comp, byte, profundidade);
     }
 }
 unsigned char empurrando(unsigned char output, unsigned char aux){
@@ -69,7 +72,7 @@ unsigned char empurrando(unsigned char output, unsigned char aux){
 void escreve_arvore(node_arvore *head, FILE *salvar){
     unsigned char barra= 92;
     if(head!=NULL){
-        if(conteudo(head->byte)==92){
+        if(conteudo(head->byte)==barra){
             fwrite(&barra, sizeof(unsigned char), 1, salvar);
         }
         else if(conteudo(head->byte) =='*' && eh_folha(head)){
@@ -106,14 +109,14 @@ void escreve(node_lista *head, node_arvore *cabeca_arvore, char arquivo[], int t
     }
     fclose(salvar);
 }
-void compactar(fake_hash *new_fake_hash, char arquivo[], node_arvore *cabeca_arvore, int tamanho_da_arvore){
+void compactar(array_comp *new_array_comp, char arquivo[], node_arvore *cabeca_arvore, int tamanho_da_arvore){
     unsigned char input, output=0, aux;
     node_lista *head=NULL, *fim=NULL;
     int bits, posicao=0;
     FILE *pont2=fopen(arquivo, "rb");
 
     while(fscanf(pont2,"%c", &input)!=EOF){
-        bits= new_fake_hash->profundidade[input] - 1;
+        bits= new_array_comp->profundidade[input] - 1;
         while(bits>=0){
             if(posicao==8){
                 fim=cria_lista_invertida(head,fim,pont_para_void(output));
@@ -123,7 +126,7 @@ void compactar(fake_hash *new_fake_hash, char arquivo[], node_arvore *cabeca_arv
                 posicao=0;
                 output=0;
             }
-            aux = new_fake_hash->compactado[input] >> bits;
+            aux = new_array_comp->compactado[input] >> bits;
             output=empurrando(output, aux);
             posicao++;
             bits--;
@@ -140,17 +143,15 @@ void compactar(fake_hash *new_fake_hash, char arquivo[], node_arvore *cabeca_arv
 
 }
 void converte_original_para_compactado(node_arvore *head, char arquivo[]){
-    fake_hash *new_fake_hash = (fake_hash*)malloc(sizeof(fake_hash));
+    array_comp *new_array_comp = (array_comp*)malloc(sizeof(array_comp));
     int i;
     for(i=0;i<256;i++){
-        new_fake_hash->profundidade[i]=0;
+        new_array_comp->profundidade[i]=0;
     }
-    node_lista *ajuda=NULL;
-    node_lista *fim=NULL;
     node_arvore *aux=head;
-    node_arvore *aux2=head;
     int tamanho_da_arvore;
-    tamanho_da_arvore=contando(aux2,0);
-    dicionario(aux, new_fake_hash,0, 0);
-    compactar(new_fake_hash, arquivo, head, tamanho_da_arvore);
+    tamanho_da_arvore=contando(aux,0);
+    aux=head;
+    dicionario(aux, new_array_comp,0, 0);
+    compactar(new_array_comp, arquivo, head, tamanho_da_arvore);
 }
