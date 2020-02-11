@@ -33,6 +33,7 @@ void teste_enqueue(){
 
     CU_ASSERT(new_node!=NULL);
     
+    
     CU_ASSERT_EQUAL(new_node->freq, 15);
     CU_ASSERT_EQUAL(conteudo(new_node->byte),'*');
     CU_ASSERT(new_node->left==NULL);
@@ -54,10 +55,12 @@ void teste_cria_lista_invertida(){
 
     node_lista *teste_head=NULL;
     node_lista *teste_fim=NULL;
+    CU_ASSERT_PTR_EQUAL(teste_head,teste_fim);
     teste_fim = cria_lista_invertida(teste_head, teste_fim,pont_para_void('*'));
     CU_ASSERT_EQUAL(conteudo(novo_byte->byte_comp),conteudo(teste_fim->byte_comp));
     CU_ASSERT(teste_fim->next==NULL);
     CU_ASSERT(teste_fim->previous==NULL);
+    CU_ASSERT_PTR_EQUAL(teste_fim->next,teste_fim->previous);
     
 }
 
